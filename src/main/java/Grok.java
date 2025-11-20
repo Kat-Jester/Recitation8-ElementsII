@@ -1,9 +1,8 @@
-
 /**
  * Groks are bad actors in a game.  Groks have the ability to ingest
  * a PowerPill to replenish their energy.  This makes them difficult
  * to kill.  This implementation allows a Grok to store upto a maximum
- * number of power pills (5 by default).  
+ * number of power pills (5 by default).
  *
  * @author (You Again)
  * @version (0.1)
@@ -17,8 +16,6 @@ public class Grok
     private int powerLevel;
     private PowerPill[] powerPill;
     private int numOfPowerPills;
-
-    // accessor variables
 
     /*
      * Initializes a Grok object to the default power level of 50.
@@ -40,11 +37,8 @@ public class Grok
      */
     public Grok(int powerLevel)
     {
-
         init(powerLevel);
     }
-
-    // accessor methods
 
     /*
      * Returns the power level of this Grok.
@@ -54,8 +48,6 @@ public class Grok
     {
         return powerLevel;
     }
-
-    // mutator methods
 
     /*
      * Sets the power level of this Grok.
@@ -72,7 +64,10 @@ public class Grok
      */
     public void pickupPowerPill(PowerPill pill)
     {
-        // TODO: replace this line with your code
+        if (numOfPowerPills < MAX_NUMBER_OF_POWERPILLS) {
+            powerPill[numOfPowerPills] = pill;
+            numOfPowerPills++;
+        }
     }
 
     /*
@@ -82,7 +77,12 @@ public class Grok
      */
     public void takePowerPill()
     {
-        // TODO: replace this line with your code
+        if (numOfPowerPills > 0) {
+            PowerPill pill = powerPill[numOfPowerPills - 1];
+            powerPill[numOfPowerPills - 1] = null;
+            numOfPowerPills--;
+            powerLevel += pill.getPower();
+        }
     }
 
     /*
@@ -94,11 +94,30 @@ public class Grok
         /*
          * Search for name in array and if found consume powerpill.
          * Copy all powerpills over so that the consumed power pill
-         * is removed from the array and there are no gaps in the 
+         * is removed from the array and there are no gaps in the
          * array.
-         */ 
-        
-        // TODO: replace this line with your code
+         */
+
+        if (name == null) return;
+
+        for (int i = 0; i < numOfPowerPills; i++) {
+            if (powerPill[i] != null && name.equals(powerPill[i].getName())) {
+
+                // Consume power
+                powerLevel += powerPill[i].getPower();
+
+                // Shift the remaining pills left
+                for (int j = i; j < numOfPowerPills - 1; j++) {
+                    powerPill[j] = powerPill[j + 1];
+                }
+
+                // Clean up last slot and decrease count
+                powerPill[numOfPowerPills - 1] = null;
+                numOfPowerPills--;
+
+                return; // Only consume one pill
+            }
+        }
     }
 
     /*
@@ -108,5 +127,22 @@ public class Grok
     public void tookHit()
     {
         powerLevel = powerLevel - 5;
+    }
+
+    public static void main(String[] args)
+    {
+        Grok grok = new Grok();
+        grok.pickupPowerPill(new PowerPill("ONE"));
+        grok.pickupPowerPill(new PowerPill("TWO"));
+        grok.pickupPowerPill(new PowerPill("THREE"));
+        grok.pickupPowerPill(new PowerPill("FOUR"));
+        grok.pickupPowerPill(new PowerPill("FIVE"));
+        grok.pickupPowerPill(new PowerPill("SIX"));
+        grok.takePowerPill();
+        grok.takePowerPill();
+        grok.takePowerPill();
+        grok.takePowerPill();
+        grok.takePowerPill();
+        grok.takePowerPill();
     }
 }
